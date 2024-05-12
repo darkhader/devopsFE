@@ -1,0 +1,40 @@
+name: Deploy to AWS ECR
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch name
+
+jobs:
+  push_to_ecr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ap-southeast-1
+
+      - name: Login to AWS ECR
+        run: |
+          aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 381492316277.dkr.ecr.ap-southeast-1.amazonaws.com
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: |
+            381492316277.dkr.ecr.ap-southeast-1.amazonaws.com/staging-codese-be
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}-${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
