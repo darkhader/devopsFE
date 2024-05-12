@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  push_to_ecr:
+    image: ubuntu:latest
+    environment:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ap-southeast-1
+    volumes:
+      - .:/workspace
+    command: >
+      /bin/bash -c "
+      aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 381492316277.dkr.ecr.ap-southeast-1.amazonaws.com;
+      docker-compose -f docker-compose.yml build;
+      docker-compose -f docker-compose.yml push
+      "
+    labels:
+      - "com.github.actor=${{ github.actor }}"
+      - "com.github.sha=${{ github.sha }}"
+      - "com.github.event_name=${{ github.event_name }}"
+      - "com.github.repository=${{ github.repository }}"
+      - "com.github.run_id=${{ github.run_id }}"
