@@ -66,19 +66,3 @@ jobs:
           git add .
           git commit -m "Github action trigger build with branch ${{ steps.extract_branch.outputs.branch }} commit ${{ github.sha }}"
           git push origin main
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
