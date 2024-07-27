@@ -43,12 +43,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Extract branch name
-              shell: bash
-              run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-              id: extract_branch
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
 
-            - name: Update helm repo
-              run: |
+      - name: Update helm repo
+        run: |
                 echo Update newest image to deploy environment ${{ steps.extract_branch.outputs.branch }} at commit ${{ github.sha }}
 
                 git config --global user.email "dr.hiep98@gmail.com"
