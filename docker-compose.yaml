@@ -1,12 +1,8 @@
 version: '3.8'
 
 services:
-  push_to_ecr:
+  push_to_ecr-check:
     image: ubuntu:latest
-    environment:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ap-southeast-1
     volumes:
       - .:/workspace
     command: >
